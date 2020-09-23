@@ -1,0 +1,43 @@
+version: '3.7'
+
+services:
+  app:
+    build: docker
+    image: alpine:3.7
+
+    command: python manage.py runserver
+    volumes:
+      - ./:/opt/docker/
+
+    working_dir: /opt/docker/
+    ports:
+      - 8000:8000
+    network_mode: host
+    depends_on:
+      - database
+  database:
+    container_name: postgres
+    image: postgres:11.5
+    restart: always
+    volumes:
+      - ./.pgdata:/var/lib/postgresql/data
+    environment:
+      - LC_ALL=C.UTF-8
+      - POSTGRES_PASSWORD=unidocsign
+      - POSTGRES_USER=gE#^i!vbDfQEVNHD0mS95DChPwk&bxPi7qmE*Kgo3O*7WsOfBA
+    ports:
+      - 5434:5434
+  nginx:
+    image: nginx:1.17
+    container_name: nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    depends_on:
+      - app
+
+
+
+
+
